@@ -125,6 +125,16 @@ Point& Point::operator/=(double ratio)
   return *this;
 }
 
+
+bool Point::equals(const Point &other, double precision) const
+{
+    bool sameX = std::fabs(getX()- other.getX()) <= precision;
+    bool sameY = std::fabs(getY()- other.getY()) <= precision;
+
+    return sameX && sameY;
+}
+
+
 bool Point::operator==(const Point & other) const{
   bool sameX = getX() == other.getX();
   bool sameY = getY() == other.getY();

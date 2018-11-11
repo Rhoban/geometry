@@ -59,7 +59,11 @@ public:
                              double thetaMin =   0.0,
                              double thetaMax = 360.0);
 
+  bool equals(const Point & other , double precision = FLOAT_PRECISION) const;
   bool operator==(const Point & other) const;
+
+private:
+  constexpr static const double FLOAT_PRECISION = 0.001;
 };
 
 
