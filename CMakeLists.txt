@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 2.8)
 project(rhoban_geometry)
 
 find_package(catkin REQUIRED COMPONENTS
+  rhoban_random
   rhoban_utils
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES rhoban_geometry
-  CATKIN_DEPENDS rhoban_utils
+  CATKIN_DEPENDS rhoban_random rhoban_utils
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

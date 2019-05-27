@@ -1,7 +1,8 @@
 #include <math.h>
 #include <cmath>
 
-#include "rhoban_geometry/point.h"
+#include <rhoban_geometry/point.h>
+#include <rhoban_random/tools.h>
 
 #include <random>
 #include <chrono>
@@ -9,12 +10,6 @@
 #define EPSILON 0.000001
 
 using namespace std;
-
-static std::default_random_engine get_random_engine()
-{
-  unsigned long seed = std::chrono::system_clock::now().time_since_epoch().count();
-  return std::default_random_engine(seed);
-}
 
 namespace rhoban_geometry
 {
@@ -156,18 +151,28 @@ Point Point::mkPointFromPolar(double rho, rhoban_utils::Angle a)
   return Point(cos(theta) * rho, sin(theta) * rho);
 }
 
-Point Point::mkRandomPolar(double rhoMax)
+Point Point::mkRandomPolar(double rhoMax, std::default_random_engine* engine)
 {
-  return mkRandomPolar(0.0, rhoMax);
+  return mkRandomPolar(0.0, rhoMax, engine);
 }
 
-Point Point::mkRandomPolar(double rhoMin, double rhoMax, double thetaMin, double thetaMax)
+Point Point::mkRandomPolar(double rhoMin, double rhoMax, std::default_random_engine* engine)
 {
-  auto generator = get_random_engine();
+  return mkRandomPolar(rhoMin, rhoMax, 0.0, 360.0, engine);
+}
+
+Point Point::mkRandomPolar(double rhoMin, double rhoMax, double thetaMin, double thetaMax,
+                           std::default_random_engine* engine)
+{
+  bool generate_engine = engine == nullptr;
+  if (generate_engine)
+    engine = rhoban_random::newRandomEngine();
   std::uniform_real_distribution<double> rhoDist(rhoMin, rhoMax);
   std::uniform_real_distribution<double> thetaDist(thetaMin, thetaMax);
-  double rho = rhoDist(generator);
-  double theta = thetaDist(generator);
+  double rho = rhoDist(*engine);
+  double theta = thetaDist(*engine);
+  if (generate_engine)
+    delete (engine);
   return mkPointFromPolar(rho, theta);
 }
 

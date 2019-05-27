@@ -6,6 +6,7 @@
 #include "rhoban_utils/angle.h"
 
 #include <Eigen/Core>
+#include <random>
 
 namespace rhoban_geometry
 {
@@ -59,8 +60,10 @@ public:
   static Point mkPointFromPolar(double rho, rhoban_utils::Angle theta);
 
   // Random points creators
-  static Point mkRandomPolar(double rhoMax);
-  static Point mkRandomPolar(double rhoMin, double rhoMax, double thetaMin = 0.0, double thetaMax = 360.0);
+  static Point mkRandomPolar(double rhoMax, std::default_random_engine* engine = nullptr);
+  static Point mkRandomPolar(double rhoMin, double rhoMax, std::default_random_engine* engine = nullptr);
+  static Point mkRandomPolar(double rhoMin, double rhoMax, double thetaMin, double thetaMax,
+                             std::default_random_engine* engine = nullptr);
 
   bool operator==(const Point& other) const;
 };
