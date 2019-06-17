@@ -20,6 +20,8 @@ public:
   Point(double x, double y) : x(x), y(y){};
   Point(const Eigen::Vector2d& p);
 
+  Eigen::Vector2d toVector();
+
   double getX() const
   {
     return x;
