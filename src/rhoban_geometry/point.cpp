@@ -17,7 +17,7 @@ Point::Point(const Eigen::Vector2d& p) : x(p.x()), y(p.y())
 {
 }
 
-Eigen::Vector2d Point::toVector()
+Eigen::Vector2d Point::toVector() const
 {
   Eigen::Vector2d v(getX(), getY());
   return v;
