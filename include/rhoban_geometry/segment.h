@@ -2,6 +2,7 @@
 
 #include "rhoban_geometry/point.h"
 #include "rhoban_geometry/circle.h"
+#include "rhoban_geometry/parametric_line.h"
 
 namespace rhoban_geometry
 {
@@ -34,6 +35,9 @@ public:
 
   // Get the segment length
   double getLength();
+
+  // Does two segments intersect ?
+  bool intersects(const Segment segment);
 
   // The two segments
   Point A, B;

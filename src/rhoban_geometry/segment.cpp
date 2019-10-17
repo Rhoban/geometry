@@ -63,6 +63,27 @@ bool Segment::intersects(const Circle& circle)
   return false;
 }
 
+bool Segment::intersects(const Segment segment)
+{
+  Point C = segment.A;
+  Point D = segment.B;
+
+  ParametricLine s1 = ParametricLine(A, B);
+  ParametricLine s2 = ParametricLine(C, D);
+
+  Point point = s1.intersection(s2);
+
+  double dotproduct = (point.x - A.x) * (B.x - A.x) + (point.y - A.y) * (B.y - A.y);
+
+  if (dotproduct < 0)
+    return false;
+
+  if (dotproduct > Point::dotProduct(A, B))
+    return false;
+
+  return true;
+}
+
 double Segment::getLength()
 {
   return (B - A).getLength();
