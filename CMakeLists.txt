@@ -42,6 +42,7 @@ target_link_libraries(rhoban_geometry ${catkin_LIBRARIES})
 
 
 set(TESTS
+  ray2d
   3d/plane
   3d/intersection
   )

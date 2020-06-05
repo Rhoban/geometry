@@ -89,4 +89,9 @@ double Segment::getLength()
   return (B - A).getLength();
 }
 
+ParametricLine Segment::getLine() const
+{
+  return ParametricLine(A, B);
+}
+
 }  // namespace rhoban_geometry

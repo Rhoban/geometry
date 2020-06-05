@@ -6,5 +6,6 @@ set(SOURCES
   interpolation.cpp
   parametric_line.cpp
   parametric_line_cluster.cpp
+  ray2d.cpp
   segment.cpp
   )

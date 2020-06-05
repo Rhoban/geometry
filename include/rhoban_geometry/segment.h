@@ -30,7 +30,7 @@ public:
   // Distance from point to segment
   double distance(const Point& point);
 
-  // Does a circle intersects tis segment?
+  /// Does a circle intersects this segment?
   bool intersects(const Circle& circle);
 
   // Get the segment length
@@ -38,6 +38,8 @@ public:
 
   // Does two segments intersect ?
   bool intersects(const Segment segment);
+
+  ParametricLine getLine() const;
 
   // The two segments
   Point A, B;
