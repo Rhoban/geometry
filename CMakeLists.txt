@@ -1,18 +1,7 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.16.3)
 project(rhoban_geometry)
 
-find_package(catkin REQUIRED COMPONENTS
-  rhoban_random
-  rhoban_utils
-)
-
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES rhoban_geometry
-  CATKIN_DEPENDS rhoban_random rhoban_utils
-)
-
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include )
 
 #Enable C++17
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wextra")
@@ -38,7 +27,10 @@ foreach (DIRECTORY ${SOURCES_DIRECTORIES})
 endforeach (DIRECTORY)
 
 add_library (rhoban_geometry ${ALL_SOURCES})
-target_link_libraries(rhoban_geometry ${catkin_LIBRARIES})
+target_link_libraries(rhoban_geometry PUBLIC rhoban_random rhoban_utils)
+target_include_directories(rhoban_geometry PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
 
 
 set(TESTS
