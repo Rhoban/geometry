@@ -8,4 +8,5 @@ set(SOURCES
   parametric_line_cluster.cpp
   ray2d.cpp
   segment.cpp
+  bounding_box.cpp
   )

@@ -3,6 +3,7 @@
 #include "rhoban_geometry/point.h"
 #include "rhoban_geometry/circle.h"
 #include "rhoban_geometry/parametric_line.h"
+#include "rhoban_geometry/bounding_box.h"
 
 namespace rhoban_geometry
 {
@@ -38,6 +39,9 @@ public:
 
   // Does two segments intersect ?
   bool intersects(const Segment segment);
+
+  // Gets the bounding box
+  BoundingBox getBoundingBox() const;
 
   ParametricLine getLine() const;
 

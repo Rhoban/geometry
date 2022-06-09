@@ -84,6 +84,17 @@ bool Segment::intersects(const Segment segment)
   return true;
 }
 
+BoundingBox Segment::getBoundingBox() const
+{
+  BoundingBox bbox;
+  bbox.lower_left.x = std::min(A.x, B.x);
+  bbox.lower_left.y = std::min(A.y, B.y);
+  bbox.upper_right.x = std::max(A.x, B.x);
+  bbox.upper_right.y = std::max(A.y, B.y);
+
+  return bbox;
+}
+
 double Segment::getLength()
 {
   return (B - A).getLength();

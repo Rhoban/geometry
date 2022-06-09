@@ -144,6 +144,17 @@ std::vector<Point> Circle::tangents(const Point& p)
   return result;
 }
 
+BoundingBox Circle::getBoundingBox() const
+{
+  BoundingBox bbox;
+  bbox.lower_left.x = center.x - radius;
+  bbox.lower_left.y = center.y - radius;
+  bbox.upper_right.x = center.x + radius;
+  bbox.upper_right.y = center.y + radius;
+
+  return bbox;
+}
+
 ostream& operator<<(ostream& out, const rhoban_geometry::Circle& c)
 {
   out << '{' << c.getRadius() << ',' << c.getCenter() << '}';

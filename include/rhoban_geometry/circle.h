@@ -1,6 +1,7 @@
 #pragma once
 
 #include "rhoban_geometry/point.h"
+#include "rhoban_geometry/bounding_box.h"
 
 namespace rhoban_geometry
 {
@@ -76,6 +77,11 @@ public:
    * the circle where there is none
    */
   std::vector<Point> tangents(const Point& p);
+
+  /**
+   * Makes a bounding box over this circle
+   */
+  BoundingBox getBoundingBox() const;
 };
 
 std::ostream& operator<<(std::ostream& out, const rhoban_geometry::Circle& c);
