@@ -65,23 +65,30 @@ bool Segment::intersects(const Circle& circle)
 
 bool Segment::intersects(const Segment segment)
 {
-  Point C = segment.A;
-  Point D = segment.B;
+  Eigen::Vector2d A1 = (A).toVector();
+  Eigen::Vector2d u1 = (B - A).toVector();
+  Eigen::Vector2d A2 = (segment.A).toVector();
+  Eigen::Vector2d u2 = (segment.B - segment.A).toVector();
 
-  ParametricLine s1 = ParametricLine(A, B);
-  ParametricLine s2 = ParametricLine(C, D);
+  // We check that there is an intersection between the two segments
+  // A1 + lambda1 u1 = A2 + lambda2 u2
+  // lambda1 u1 - lambda2 u2 = A2 - A1
 
-  Point point = s1.intersection(s2);
+  Eigen::Matrix2d M;
+  M << u1(0), -u2(0), u1(1), -u2(1);
 
-  double dotproduct = (point.x - A.x) * (B.x - A.x) + (point.y - A.y) * (B.y - A.y);
-
-  if (dotproduct < 0)
+  // The segments are likely parallel
+  if (M.determinant() == 0)
+  {
     return false;
+  }
 
-  if (dotproduct > Point::dotProduct(A, B))
-    return false;
+  // We solve the system
+  Eigen::Vector2d V = A2 - A1;
+  Eigen::Vector2d lambdas = M.inverse() * V;
 
-  return true;
+  // We check that the intersection is in the segments and not in the lines
+  return lambdas(0) >= 0 && lambdas(0) <= 1 && lambdas(1) >= 0 && lambdas(1) <= 1;
 }
 
 BoundingBox Segment::getBoundingBox() const
