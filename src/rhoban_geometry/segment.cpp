@@ -37,8 +37,10 @@ double Segment::distance(const Point& point)
   return (projection - point).getLength();
 }
 
-bool Segment::intersects(const Circle& circle)
+std::vector<Point> Segment::intersections(const Circle& circle)
 {
+  std::vector<Point> result;
+
   // Circle parameters
   double Cx = circle.getCenter().x;
   double Cy = circle.getCenter().y;
@@ -57,10 +59,28 @@ bool Segment::intersects(const Circle& circle)
     double a1 = (-b - sqrt(det)) / (2 * a);
     double a2 = (-b + sqrt(det)) / (2 * a);
 
-    return (a1 >= 0 && a1 <= 1) || (a2 >= 0 && a2 <= 1) || (a1 < 0 && a2 > 1);
+    if (a1 < 0 && a2 > 1)
+    {
+      // This is the case where the segment is inside the circle, we return the two extremities
+      result.push_back(A);
+      result.push_back(B);
+    }
+    if (a1 >= 0 && a1 <= 1)
+    {
+      result.push_back(A + a1 * (B - A));
+    }
+    if (a2 >= 0 && a2 <= 1)
+    {
+      result.push_back(A + a2 * (B - A));
+    }
   }
 
-  return false;
+  return result;
+}
+
+bool Segment::intersects(const Circle& circle)
+{
+  return intersections(circle).size() > 0;
 }
 
 bool Segment::intersects(const Segment segment)

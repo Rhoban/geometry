@@ -32,6 +32,7 @@ public:
   double distance(const Point& point);
 
   /// Does a circle intersects this segment?
+  std::vector<Point> intersections(const Circle& circle);
   bool intersects(const Circle& circle);
 
   // Get the segment length
