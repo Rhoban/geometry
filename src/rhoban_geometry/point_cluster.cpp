@@ -1,4 +1,5 @@
 #include "rhoban_geometry/point_cluster.h"
+#include <algorithm>
 
 namespace rhoban_geometry
 {
@@ -48,4 +49,16 @@ std::vector<rhoban_geometry::PointCluster> createClusters(const std::vector<rhob
     addToClusters(p, clusters, dist_tol);
   }
   return clusters;
+}
+
+rhoban_geometry::Point PointCluster::getMedian()
+{
+  rhoban_geometry::Point result;
+  if (points.size() > 0)
+  {
+    std::sort(points.begin(), points.end(),
+              [](const Point& lhs, const Point& rhs) { return lhs.x + lhs.y < rhs.x + rhs.y; });
+    return points[points.size() / 2];
+  }
+  return result;
 }

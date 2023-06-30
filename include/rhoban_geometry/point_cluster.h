@@ -26,6 +26,9 @@ public:
     return average;
   }
 
+  /* no const policy applied */
+  Point getMedian();
+
   bool acceptPoint(const Point& candidate, float dist_tol) const;
 
   void push(const Point& p);
