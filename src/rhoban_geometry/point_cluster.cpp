@@ -8,6 +8,18 @@ bool PointCluster::acceptPoint(const Point& candidate, float dist_tol) const
   return average.getDist(candidate) <= dist_tol;
 }
 
+rhoban_geometry::Point PointCluster::getMedian()
+{
+  rhoban_geometry::Point result;
+  if (points.size() > 0)
+  {
+    std::sort(points.begin(), points.end(),
+              [](const Point& lhs, const Point& rhs) { return lhs.x + lhs.y < rhs.x + rhs.y; });
+    return points[points.size() / 2];
+  }
+  return result;
+}
+
 void PointCluster::push(const Point& p)
 {
   // Updating average
@@ -49,16 +61,4 @@ std::vector<rhoban_geometry::PointCluster> createClusters(const std::vector<rhob
     addToClusters(p, clusters, dist_tol);
   }
   return clusters;
-}
-
-rhoban_geometry::Point PointCluster::getMedian()
-{
-  rhoban_geometry::Point result;
-  if (points.size() > 0)
-  {
-    std::sort(points.begin(), points.end(),
-              [](const Point& lhs, const Point& rhs) { return lhs.x + lhs.y < rhs.x + rhs.y; });
-    return points[points.size() / 2];
-  }
-  return result;
 }
