@@ -9,4 +9,5 @@ set(SOURCES
   ray2d.cpp
   segment.cpp
   bounding_box.cpp
+  filtered_points_clusters.cpp
   )
