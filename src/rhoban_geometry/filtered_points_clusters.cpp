@@ -3,7 +3,7 @@
 
 namespace rhoban_geometry
 {
-void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, float score, double clusterScoreThreshold)
+void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, int nb_mates_should_see)
 {
   bool accepted = false;
   for (unsigned int i = 0; i < clusters.size(); i++)
@@ -11,9 +11,8 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, float scor
     if (clusters[i].acceptPoint(p, dist_tol))
     {
       accepted = true;
-      bool ok = updateClusterScore(i, score, clusterScoreThreshold);
-      if (ok)
-        clusters[i].push(p);
+      clusters[i].push(p);
+      nbMatesShouldSee[i] += nb_mates_should_see;
       break;
     }
   }
@@ -21,12 +20,22 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, float scor
   if (!accepted)
   {
     clusters.push_back(rhoban_geometry::PointCluster(p));
-    clustersScores.push_back(score);
+    clustersScores.push_back(0.6);  // TODO choose this starting score well
+    nbMatesShouldSee.push_back(nb_mates_should_see);
   }
 }
 
-bool FilteredPointsClusters::updateClusterScore(int clusterIndex, float score, double clusterScoreThreshold)
+void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold)
 {
+  for (unsigned int i = 0; i < clusters.size(); i++)
+  {
+    updateClusterScore(i, clusterScoreThreshold);
+  }
+}
+
+void FilteredPointsClusters::updateClusterScore(int clusterIndex, double clusterScoreThreshold)
+{
+  float score = clusters[clusterIndex].size() / nbMatesShouldSee[clusterIndex];
   float currentScore = clustersScores[clusterIndex];
   float epsilon = 0.0001;
   float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
@@ -38,18 +47,17 @@ bool FilteredPointsClusters::updateClusterScore(int clusterIndex, float score, d
   if (newScore < clusterScoreThreshold)
   {
     clusters.erase(clusters.begin() + clusterIndex);
+    nbMatesShouldSee.erase(nbMatesShouldSee.begin() + clusterIndex);
     clustersScores.erase(clustersScores.begin() + clusterIndex);
-    return false;
+    return;
   }
 
   clustersScores[clusterIndex] = newScore;
-
-  return true;
 }
 
-void FilteredPointsClusters::getClusters(std::vector<PointCluster>& clusters_out) const
+std::vector<PointCluster> FilteredPointsClusters::getClusters()
 {
-  clusters_out = clusters;
+  return clusters;
 }
 
 std::string FilteredPointsClusters::toString()
@@ -60,6 +68,17 @@ std::string FilteredPointsClusters::toString()
     oss << "Cluster " << i << " : score: " << clustersScores[i] << std::endl;
   }
   return oss.str();
+}
+
+std::vector<Point> FilteredPointsClusters::getClusterPositions()
+{
+  std::vector<Point> positions;
+  for (PointCluster c : clusters)
+  {
+    auto center = (c.size() >= 3) ? c.getMedian() : c.getAverage();
+    positions.push_back(center);
+  }
+  return positions;
 }
 
 };  // namespace rhoban_geometry
