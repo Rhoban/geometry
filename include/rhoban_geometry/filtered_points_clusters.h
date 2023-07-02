@@ -4,6 +4,14 @@
 
 namespace rhoban_geometry
 {
+
+struct Mate
+{
+  rhoban_geometry::Point position;
+  double angle;
+  std::vector<rhoban_geometry::Point> obstacles;
+};
+
 class FilteredPointsClusters
 {
 private:
@@ -11,12 +19,11 @@ private:
   std::vector<float> clustersScores;
   std::vector<int> nbNewObs;
 
-  void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::vector<Point> mates,
-                          std::vector<double> mates_angles);
+  void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::map<int, Mate> mates);
 
 public:
   void addPoint(const Point& p, float dist_tol);
-  void updateClustersScores(double clusterScoreThreshold, std::vector<Point> mates, std::vector<double> mates_angles);
+  void updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates);
   std::vector<PointCluster> getClusters();
   Point getClusterPosition(int index);
   int getClusterSize(int index);
@@ -25,4 +32,4 @@ public:
 };
 }  // namespace rhoban_geometry
 
-bool mateShouldSeePoint(const rhoban_geometry::Point& p, const rhoban_geometry::Point& mate_pos, double mate_angle);
+int nbMatesShouldSeePoint(const rhoban_geometry::Point& p, std::map<int, rhoban_geometry::Mate> mates);

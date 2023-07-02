@@ -25,22 +25,18 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
   }
 }
 
-void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold, std::vector<Point> mates_pos,
-                                                  std::vector<double> mates_angles)
+void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates)
 {
   for (unsigned int i = 0; i < clusters.size(); i++)
   {
-    updateClusterScore(i, clusterScoreThreshold, mates_pos, mates_angles);
+    updateClusterScore(i, clusterScoreThreshold, mates);
   }
 }
 
 void FilteredPointsClusters::updateClusterScore(int clusterIndex, double clusterScoreThreshold,
-                                                std::vector<Point> mates_pos, std::vector<double> mates_angles)
+                                                std::map<int, Mate> mates)
 {
-  int nbMatesShouldSee = 0;
-  for (int i = 0; i < mates_pos.size(); i++)
-    if (mateShouldSeePoint(getClusterPosition(clusterIndex), mates_pos[i], mates_angles[i]))
-      nbMatesShouldSee++;
+  int nbMatesShouldSee = nbMatesShouldSeePoint(getClusterPosition(clusterIndex), mates);
 
   float epsilon = 0.0001;
   float score = nbNewObs[clusterIndex] / (nbMatesShouldSee + epsilon);
@@ -97,12 +93,21 @@ int FilteredPointsClusters::getNbClusters()
 
 }  // namespace rhoban_geometry
 
-bool mateShouldSeePoint(const rhoban_geometry::Point& p, const rhoban_geometry::Point& mate_pos, double mate_angle)
+int nbMatesShouldSeePoint(const rhoban_geometry::Point& p, std::map<int, rhoban_geometry::Mate> mates)
 {
-  double dist = mate_pos.getDist(p);
-  double angle = rhoban_utils::Angle::fromXY(p.x - mate_pos.x, p.y - mate_pos.y).getSignedValueRad();
-  double diff_angle = rhoban_utils::Angle(mate_angle - angle, rhoban_utils::Angle::DEG).getSignedValue();
+  int nb = 0;
+  for (std::map<int, rhoban_geometry::Mate>::iterator it = mates.begin(); it != mates.end(); ++it)
+  {
+    rhoban_geometry::Point mate_pos = it->second.position;
+    double mate_angle = it->second.angle;
 
-  // TODO 3.0 meters and fov should be parameters
-  return (dist < 3.0 && diff_angle > -90 && diff_angle < 90);
+    double dist = mate_pos.getDist(p);
+    double angle = rhoban_utils::Angle::fromXY(p.x - mate_pos.x, p.y - mate_pos.y).getSignedValueRad();
+    double diff_angle = rhoban_utils::Angle(mate_angle - angle, rhoban_utils::Angle::DEG).getSignedValue();
+
+    // TODO 3.0 meters and fov should be parameters
+    if (dist < 3.0 && diff_angle > -90 && diff_angle < 90)
+      nb++;
+  }
+  return nb;
 }
