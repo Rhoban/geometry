@@ -8,16 +8,19 @@ class FilteredPointsClusters
 {
 private:
   std::vector<PointCluster> clusters;
-  std::vector<float> nbMatesShouldSee;
   std::vector<float> clustersScores;
+  std::vector<int> nbNewObs;
 
-  void updateClusterScore(int clusterIndex, double clusterScoreThreshold);
+  void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::vector<Point> mates,
+                          std::vector<double> mates_angles);
 
 public:
-  void addPoint(const Point& p, float dist_tol, int nb_mates_should_see);
-  void updateClustersScores(double clusterScoreThreshold);
+  void addPoint(const Point& p, float dist_tol);
+  void updateClustersScores(double clusterScoreThreshold, std::vector<Point> mates, std::vector<double> mates_angles);
   std::vector<PointCluster> getClusters();
-  std::vector<Point> getClusterPositions();
+  Point getClusterPosition(int index);
+  int getClusterSize(int index);
+  int getNbClusters();
   std::string toString();
 };
 }  // namespace rhoban_geometry

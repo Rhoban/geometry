@@ -3,7 +3,7 @@
 
 namespace rhoban_geometry
 {
-void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, int nb_mates_should_see)
+void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
 {
   bool accepted = false;
   for (unsigned int i = 0; i < clusters.size(); i++)
@@ -12,7 +12,7 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, int nb_mat
     {
       accepted = true;
       clusters[i].push(p);
-      nbMatesShouldSee[i] += nb_mates_should_see;
+      nbNewObs[i]++;
       break;
     }
   }
@@ -21,21 +21,29 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol, int nb_mat
   {
     clusters.push_back(rhoban_geometry::PointCluster(p));
     clustersScores.push_back(0.6);  // TODO choose this starting score well
-    nbMatesShouldSee.push_back(nb_mates_should_see);
+    nbNewObs.push_back(1);
   }
 }
 
-void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold)
+void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold, std::vector<Point> mates_pos,
+                                                  std::vector<double> mates_angles)
 {
   for (unsigned int i = 0; i < clusters.size(); i++)
   {
-    updateClusterScore(i, clusterScoreThreshold);
+    updateClusterScore(i, clusterScoreThreshold, mates_pos, mates_angles);
   }
 }
 
-void FilteredPointsClusters::updateClusterScore(int clusterIndex, double clusterScoreThreshold)
+void FilteredPointsClusters::updateClusterScore(int clusterIndex, double clusterScoreThreshold,
+                                                std::vector<Point> mates_pos, std::vector<double> mates_angles)
 {
-  float score = clusters[clusterIndex].size() / nbMatesShouldSee[clusterIndex];
+  int nbMatesShouldSee = 0;
+  for (int i = 0; i < mates_pos.size(); i++)
+    if (mateShouldSeePoint(getClusterPosition(clusterIndex), mates_pos[i], mates_angles[i]))
+      nbMatesShouldSee++;
+
+  float score = nbNewObs[clusterIndex] / nbMatesShouldSee;
+  nbNewObs[clusterIndex] = 0;
   float currentScore = clustersScores[clusterIndex];
   float epsilon = 0.0001;
   float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
@@ -47,8 +55,8 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   if (newScore < clusterScoreThreshold)
   {
     clusters.erase(clusters.begin() + clusterIndex);
-    nbMatesShouldSee.erase(nbMatesShouldSee.begin() + clusterIndex);
     clustersScores.erase(clustersScores.begin() + clusterIndex);
+    nbNewObs.erase(nbNewObs.begin() + clusterIndex);
     return;
   }
 
@@ -70,18 +78,24 @@ std::string FilteredPointsClusters::toString()
   return oss.str();
 }
 
-std::vector<Point> FilteredPointsClusters::getClusterPositions()
+Point FilteredPointsClusters::getClusterPosition(int index)
 {
-  std::vector<Point> positions;
-  for (PointCluster c : clusters)
-  {
-    auto center = (c.size() >= 3) ? c.getMedian() : c.getAverage();
-    positions.push_back(center);
-  }
-  return positions;
+  PointCluster c = clusters[index];
+  auto center = (c.size() >= 3) ? c.getMedian() : c.getAverage();
+  return center;
 }
 
-};  // namespace rhoban_geometry
+int FilteredPointsClusters::getClusterSize(int index)
+{
+  return clusters[index].size();
+}
+
+int FilteredPointsClusters::getNbClusters()
+{
+  return clusters.size();
+}
+
+}  // namespace rhoban_geometry
 
 bool mateShouldSeePoint(const rhoban_geometry::Point& p, const rhoban_geometry::Point& mate_pos, double mate_angle)
 {
