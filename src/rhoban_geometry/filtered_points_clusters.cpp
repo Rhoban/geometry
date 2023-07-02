@@ -42,10 +42,10 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
     if (mateShouldSeePoint(getClusterPosition(clusterIndex), mates_pos[i], mates_angles[i]))
       nbMatesShouldSee++;
 
-  float score = nbNewObs[clusterIndex] / nbMatesShouldSee;
+  float epsilon = 0.0001;
+  float score = nbNewObs[clusterIndex] / (nbMatesShouldSee + epsilon);
   nbNewObs[clusterIndex] = 0;
   float currentScore = clustersScores[clusterIndex];
-  float epsilon = 0.0001;
   float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
 
   // capping between [epsilon, 1-epsilon] so that it doesn't go to 0 or 1
