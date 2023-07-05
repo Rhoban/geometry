@@ -25,6 +25,7 @@ public:
   void updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates);
   std::vector<PointCluster> getClusters();
   Point getClusterPosition(int index);
+  bool isClusterTrusted(int index, float trust_threshold);
   int getClusterSize(int index);
   int getNbClusters();
   std::string toString();

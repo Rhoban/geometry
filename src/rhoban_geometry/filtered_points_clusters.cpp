@@ -20,7 +20,7 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
   // If no cluster matches, create a new one
   if (!accepted)
   {
-    clusters.push_back(std::pair(rhoban_geometry::PointCluster(p), 0.6));  // TODO choose this starting score well
+    clusters.push_back(std::pair(rhoban_geometry::PointCluster(p), 0.5));  // TODO choose this starting score well
     nbNewObs.push_back(1);
   }
 }
@@ -41,6 +41,7 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   float epsilon = 0.0001;
   float score = 1.;
 
+  // TODO tune this
   // If no new obs and no mates should see, penalize cluster
   if (nbNewObs[clusterIndex] == 0 && nbMatesShouldSee == 0)
   {
@@ -91,6 +92,11 @@ std::vector<PointCluster> FilteredPointsClusters::getClusters()
     clusters.push_back(this->clusters[i].first);
   }
   return clusters;
+}
+
+bool FilteredPointsClusters::isClusterTrusted(int index, float trust_threshold)
+{
+  return clusters[index].second > trust_threshold;
 }
 
 std::string FilteredPointsClusters::toString()
