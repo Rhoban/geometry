@@ -28,6 +28,15 @@ void PointCluster::push(const Point& p)
 
   points.push_back(p);
 }
+void PointCluster::erase(const std::vector<Point>::iterator it)
+{
+  Point p = *it;
+  points.erase(it);
+
+  // Updating average
+  int k = size();
+  average = (average * k - p) / (k - 1);
+}
 
 }  // namespace rhoban_geometry
 

@@ -32,6 +32,13 @@ public:
   bool acceptPoint(const Point& candidate, float dist_tol) const;
 
   void push(const Point& p);
+
+  void erase(const std::vector<Point>::iterator it);
+
+  std::vector<Point>::iterator begin()
+  {
+    return points.begin();
+  }
 };
 
 }  // namespace rhoban_geometry

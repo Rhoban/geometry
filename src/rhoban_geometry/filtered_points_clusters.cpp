@@ -3,15 +3,20 @@
 
 namespace rhoban_geometry
 {
+
 void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
 {
   bool accepted = false;
   for (unsigned int i = 0; i < clusters.size(); i++)
   {
-    if (clusters[i].acceptPoint(p, dist_tol))
+    if (clusters[i].first.acceptPoint(p, dist_tol))
     {
       accepted = true;
-      clusters[i].push(p);
+      clusters[i].first.push(p);
+      if (clusters[i].first.size() > historySize)
+      {
+        clusters[i].first.erase(clusters[i].first.begin());
+      }
       nbNewObs[i]++;
       break;
     }
@@ -19,8 +24,7 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
   // If no cluster matches, create a new one
   if (!accepted)
   {
-    clusters.push_back(rhoban_geometry::PointCluster(p));
-    clustersScores.push_back(0.6);  // TODO choose this starting score well
+    clusters.push_back(std::pair(rhoban_geometry::PointCluster(p), 0.6));  // TODO choose this starting score well
     nbNewObs.push_back(1);
   }
 }
@@ -41,7 +45,7 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   float epsilon = 0.0001;
   float score = nbNewObs[clusterIndex] / (nbMatesShouldSee + epsilon);
   nbNewObs[clusterIndex] = 0;
-  float currentScore = clustersScores[clusterIndex];
+  float currentScore = clusters[clusterIndex].second;
   float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
 
   // capping between [epsilon, 1-epsilon] so that it doesn't go to 0 or 1
@@ -51,16 +55,20 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   if (newScore < clusterScoreThreshold)
   {
     clusters.erase(clusters.begin() + clusterIndex);
-    clustersScores.erase(clustersScores.begin() + clusterIndex);
     nbNewObs.erase(nbNewObs.begin() + clusterIndex);
     return;
   }
 
-  clustersScores[clusterIndex] = newScore;
+  clusters[clusterIndex].second = newScore;
 }
 
 std::vector<PointCluster> FilteredPointsClusters::getClusters()
 {
+  std::vector<PointCluster> clusters;
+  for (unsigned int i = 0; i < this->clusters.size(); i++)
+  {
+    clusters.push_back(this->clusters[i].first);
+  }
   return clusters;
 }
 
@@ -69,21 +77,21 @@ std::string FilteredPointsClusters::toString()
   std::ostringstream oss;
   for (unsigned int i = 0; i < clusters.size(); i++)
   {
-    oss << "Cluster " << i << " : score: " << clustersScores[i] << std::endl;
+    oss << "Cluster " << i << " : score: " << clusters[i].second << std::endl;
   }
   return oss.str();
 }
 
 Point FilteredPointsClusters::getClusterPosition(int index)
 {
-  PointCluster c = clusters[index];
+  PointCluster c = clusters[index].first;
   auto center = (c.size() >= 3) ? c.getMedian() : c.getAverage();
   return center;
 }
 
 int FilteredPointsClusters::getClusterSize(int index)
 {
-  return clusters[index].size();
+  return clusters[index].first.size();
 }
 
 int FilteredPointsClusters::getNbClusters()
