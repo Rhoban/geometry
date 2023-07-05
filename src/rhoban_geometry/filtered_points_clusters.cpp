@@ -46,6 +46,8 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   float epsilon = 0.0001;
   float score = nbNewObs[clusterIndex] / (nbMatesShouldSee + epsilon);
   std::cout << "=================" << std::endl;
+  std::cout << "nbNewObs: " << nbNewObs[clusterIndex] << std::endl;
+  std::cout << "nbMatesShouldSee: " << nbMatesShouldSee << std::endl;
   std::cout << "score: " << score << std::endl;
   std::cout << "=================" << std::endl;
   nbNewObs[clusterIndex] = 0;
