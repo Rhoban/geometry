@@ -23,7 +23,7 @@ private:
   int historySize;
 
 public:
-  FilteredPointsClusters(int historySize = 10)
+  FilteredPointsClusters(int historySize = 30)
   {
     historySize = historySize;
   }
