@@ -23,8 +23,8 @@ rhoban_geometry::Point PointCluster::getMedian()
 void PointCluster::push(const Point& p)
 {
   // Updating average
-  int k = size();
-  average = (average * k + p) / (k + 1);
+  double l = 0.5;
+  average = average * l + p * (1 - l);
 
   points.push_back(p);
 }

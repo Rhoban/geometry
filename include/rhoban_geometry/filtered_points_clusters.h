@@ -15,8 +15,7 @@ struct Mate
 class FilteredPointsClusters
 {
 private:
-  std::vector<PointCluster> clusters;
-  std::vector<float> clustersScores;
+  std::vector<std::pair<PointCluster, float>> clusters;
   std::vector<int> nbNewObs;
 
   void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::map<int, Mate> mates);
