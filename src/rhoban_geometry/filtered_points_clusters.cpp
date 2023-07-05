@@ -107,8 +107,9 @@ std::string FilteredPointsClusters::toString()
 Point FilteredPointsClusters::getClusterPosition(int index)
 {
   PointCluster c = clusters[index].first;
-  auto center = (c.size() >= 3) ? c.getMedian() : c.getAverage();
-  return center;
+  // auto center = (c.size() >= 3) ? c.getMedian() : c.getAverage();
+  return c.getAverage();
+  // return center;
 }
 
 int FilteredPointsClusters::getClusterSize(int index)
