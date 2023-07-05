@@ -20,13 +20,7 @@ private:
 
   void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::map<int, Mate> mates);
 
-  int historySize;
-
 public:
-  FilteredPointsClusters(int historySize = 10)
-  {
-    historySize = historySize;
-  }
   void addPoint(const Point& p, float dist_tol);
   void updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates);
   std::vector<PointCluster> getClusters();
