@@ -13,10 +13,10 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
     {
       accepted = true;
       clusters[i].first.push(p);
-      if (clusters[i].first.size() > historySize)
-      {
-        clusters[i].first.erase(clusters[i].first.begin());
-      }
+      // if (clusters[i].first.size() > historySize)
+      // {
+      //   clusters[i].first.erase(clusters[i].first.begin());
+      // }
       nbNewObs[i]++;
       break;
     }
