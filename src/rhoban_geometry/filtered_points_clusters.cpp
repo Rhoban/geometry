@@ -66,7 +66,8 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   std::cout << "=================" << std::endl;
   nbNewObs[clusterIndex] = 0;
   float currentScore = clusters[clusterIndex].second;
-  float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
+  // float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
+  float newScore = currentScore * score;
 
   // newScore *= discount;
 
