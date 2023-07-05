@@ -45,20 +45,20 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   // If no new obs and no mates should see, penalize cluster
   if (nbNewObs[clusterIndex] == 0 && nbMatesShouldSee == 0)
   {
-    score = 0.9;
+    score = 0.5;
   }
   // If we see more than nbMatesShouldSee, renforce
   else if (nbNewObs[clusterIndex] >= nbMatesShouldSee)
   {
-    score = 1.05;
+    score = 1.4;
   }
   else if (nbNewObs[clusterIndex] == 0 && nbMatesShouldSee > 0)
   {
-    score = 0.95;
+    score = 0.6;
   }
   else if (nbNewObs[clusterIndex] < nbMatesShouldSee)
   {
-    score = 0.95;
+    score = 0.6;
   }
 
   std::cout << "=================" << std::endl;
