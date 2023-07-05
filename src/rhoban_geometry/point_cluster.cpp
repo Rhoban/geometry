@@ -24,10 +24,12 @@ void PointCluster::push(const Point& p)
 {
   // Updating average
   int k = size();
-  average = (average * k + p) / (k + 1);
+  average = average * 0.95 + p * 0.05;
+  // average = (average * k + p) / (k + 1);
 
   points.push_back(p);
 }
+
 void PointCluster::erase(const std::vector<Point>::iterator it)
 {
   Point p = *it;
