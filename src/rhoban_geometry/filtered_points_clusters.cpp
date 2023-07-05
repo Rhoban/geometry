@@ -13,10 +13,10 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
     {
       accepted = true;
       clusters[i].first.push(p);
-      // if (clusters[i].first.size() > historySize)
-      // {
-      //   clusters[i].first.erase(clusters[i].first.begin());
-      // }
+      if (clusters[i].first.size() > historySize)
+      {
+        clusters[i].first.erase(clusters[i].first.begin());
+      }
       nbNewObs[i]++;
       break;
     }
@@ -29,24 +29,30 @@ void FilteredPointsClusters::addPoint(const Point& p, float dist_tol)
   }
 }
 
-void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates)
+void FilteredPointsClusters::updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates,
+                                                  double discount)
 {
   for (unsigned int i = 0; i < clusters.size(); i++)
   {
-    updateClusterScore(i, clusterScoreThreshold, mates);
+    updateClusterScore(i, clusterScoreThreshold, mates, discount);
   }
 }
 
 void FilteredPointsClusters::updateClusterScore(int clusterIndex, double clusterScoreThreshold,
-                                                std::map<int, Mate> mates)
+                                                std::map<int, Mate> mates, double discount)
 {
   int nbMatesShouldSee = nbMatesShouldSeePoint(getClusterPosition(clusterIndex), mates);
 
   float epsilon = 0.0001;
   float score = nbNewObs[clusterIndex] / (nbMatesShouldSee + epsilon);
+  std::cout << "=================" << std::endl;
+  std::cout << "score: " << score << std::endl;
+  std::cout << "=================" << std::endl;
   nbNewObs[clusterIndex] = 0;
   float currentScore = clusters[clusterIndex].second;
   float newScore = (currentScore * score) / (currentScore * score + (1 - currentScore));
+
+  // newScore *= discount;
 
   // capping between [epsilon, 1-epsilon] so that it doesn't go to 0 or 1
   newScore = std::max(epsilon, std::min(1 - epsilon, newScore));
