@@ -53,7 +53,10 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   {
     score = 1.4;
   }
-
+  else if (nbNewObs[clusterIndex] == 0 && nbMatesShouldSee > 0)
+  {
+    score = 0.6;
+  }
   else if (nbNewObs[clusterIndex] < nbMatesShouldSee)
   {
     score = 0.8;
