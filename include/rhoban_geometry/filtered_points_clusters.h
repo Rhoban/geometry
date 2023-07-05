@@ -18,7 +18,7 @@ private:
   std::vector<std::pair<PointCluster, float>> clusters;
   std::vector<int> nbNewObs;
 
-  void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::map<int, Mate> mates, double discount);
+  void updateClusterScore(int clusterIndex, double clusterScoreThreshold, std::map<int, Mate> mates);
 
   int historySize;
 
@@ -28,7 +28,7 @@ public:
     historySize = historySize;
   }
   void addPoint(const Point& p, float dist_tol);
-  void updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates, double discount);
+  void updateClustersScores(double clusterScoreThreshold, std::map<int, Mate> mates);
   std::vector<PointCluster> getClusters();
   Point getClusterPosition(int index);
   int getClusterSize(int index);
