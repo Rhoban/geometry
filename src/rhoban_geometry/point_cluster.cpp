@@ -24,10 +24,9 @@ void PointCluster::push(const Point& p)
 {
   // Updating average
   int k = size();
-  double l = 0.;
-  // average = average * l + p * (1 - l);
+  double l = 0.5;
+  average = average * l + p * (1 - l);
   // average = (average * k + p) / (k + 1);
-  average = p;
   points.push_back(p);
 }
 
