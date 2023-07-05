@@ -47,24 +47,17 @@ void FilteredPointsClusters::updateClusterScore(int clusterIndex, double cluster
   float score = 1.;
   if (nbNewObs[clusterIndex] == 0 && nbMatesShouldSee == 0)
   {
-    score = 0.9;
+    score = 0.8;
   }
-  if (nbNewObs[clusterIndex] == nbMatesShouldSee)
+  else if (nbNewObs[clusterIndex] >= nbMatesShouldSee)
   {
-    score = 1.2;
+    score = 1.3;
   }
+
   else if (nbNewObs[clusterIndex] < nbMatesShouldSee)
   {
     score = 0.8;
   }
-  else if (nbNewObs[clusterIndex] > nbMatesShouldSee)
-  {
-    score = 1.1;
-  }
-
-  // nbNewObs: 0
-  // nbMatesShouldSee: 4
-  // score: 1.1
 
   // float score = nbNewObs[clusterIndex] / (nbMatesShouldSee + epsilon);
   std::cout << "=================" << std::endl;
